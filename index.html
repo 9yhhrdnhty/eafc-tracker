@@ -3,194 +3,289 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EAFC Objective Tracker</title>
+<title>EAFC 25 Tracker</title>
 
 <style>
 /* ---------- GLOBAL ---------- */
 html {
-    touch-action: manipulation; /* Prevent double-tap zoom globally */
+    touch-action: manipulation;
 }
 
-body{
-    font-family:"Segoe UI",Arial,sans-serif;
-    background:#121212;
-    color:#eaeaea;
-    margin:40px auto;
-    max-width:900px;
-    padding:0 20px;
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #050608;
+    color: #e5e7eb;
+    margin: 32px auto;
+    max-width: 960px;
+    padding: 0 16px;
 }
 
-h1{
-    text-align:center;
-    color:#00e676;
-    margin-bottom:30px;
-    letter-spacing:1px;
+/* EAFC 25 minimal clean vibe */
+h1 {
+    text-align: center;
+    color: #22c55e;
+    margin-bottom: 8px;
+    letter-spacing: 0.08em;
+    font-size: 24px;
+    text-transform: uppercase;
 }
 
-/* ---------- TABS ---------- */
-.tabs{
-    display:flex;
-    gap:10px;
-    margin-bottom:20px;
+.subtitle {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 13px;
+    margin-bottom: 24px;
 }
 
-.tab{
-    padding:10px 20px;
-    background:#1f1f1f;
-    border-radius:8px;
-    cursor:pointer;
-    transition:.2s;
+/* ---------- GLOBAL PROGRESS ---------- */
+.global-panel {
+    background: #0b0f16;
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+    border: 1px solid #1f2937;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.55);
 }
 
-.tab.active{
-    background:#00e676;
-    color:#000;
-    font-weight:bold;
+.global-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.global-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e5e7eb;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.global-stats {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.global-bar {
+    height: 12px;
+    background: #111827;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.global-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+    width: 0%;
+    transition: width .25s ease-out;
+}
+
+/* ---------- CATEGORY TABS ---------- */
+.category-tabs {
+    display: flex;
+    gap: 8px;
+    margin: 18px 0;
+    flex-wrap: wrap;
+}
+
+.category-tab {
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #0b0f16;
+    border: 1px solid #1f2937;
+    color: #9ca3af;
+    font-size: 13px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.category-tab.active {
+    background: #22c55e;
+    border-color: #22c55e;
+    color: #020617;
+    font-weight: 600;
+}
+
+/* ---------- ACTIVE/COMPLETED TOGGLE ---------- */
+.view-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.view-btn {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #0b0f16;
+    border: 1px solid #1f2937;
+    color: #9ca3af;
+    font-size: 12px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.view-btn.active {
+    background: #22c55e;
+    border-color: #22c55e;
+    color: #020617;
+    font-weight: 600;
 }
 
 /* ---------- CREATOR ---------- */
-.creator{
-    display:flex;
-    gap:12px;
-    margin-bottom:30px;
-    flex-wrap:wrap;
-    background:#1f1f1f;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 0 10px rgba(0,0,0,0.3);
-
-    width:100%;
-    box-sizing:border-box;
+.creator {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+    background: #050b12;
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid #1f2937;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.55);
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.creator input{
-    padding:12px;
-    font-size:16px;
-    border:none;
-    border-radius:8px;
-    flex:1;
-    background:#2b2b2b;
-    color:white;
-
-    min-width:0; /* Prevent overflow */
+.creator input {
+    padding: 10px;
+    font-size: 15px;
+    border: none;
+    border-radius: 10px;
+    flex: 1;
+    background: #0b1120;
+    color: #e5e7eb;
+    min-width: 0;
 }
 
-.creator input:focus{
-    outline:2px solid #00e676;
+.creator input::placeholder {
+    color: #6b7280;
 }
 
-button{
-    cursor:pointer;
-    border:none;
-    border-radius:8px;
-    transition:.2s;
-
-    font-size:18px; /* Prevent zoom */
-    touch-action:manipulation;
-    -webkit-user-select:none;
-    -webkit-touch-callout:none;
+.creator input:focus {
+    outline: 1px solid #22c55e;
 }
 
-.addBtn{
-    background:#00e676;
-    color:#000;
-    padding:12px 20px;
-    font-size:16px;
-    font-weight:bold;
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    transition: .2s;
+    font-size: 16px;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 
-.addBtn:hover{
-    background:#1aff7a;
+.addBtn {
+    background: #22c55e;
+    color: #020617;
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.addBtn:hover {
+    background: #4ade80;
 }
 
 /* ---------- CARD ---------- */
-.card{
-    position:relative;
-    background:#1f1f1f;
-    border-radius:12px;
-    padding:25px;
-    margin-bottom:25px;
-    box-shadow:0 0 12px rgba(0,0,0,0.35);
-    transition:.3s;
-
-    /* Prevent resizing/jumping */
-    min-height:240px;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
+.card {
+    position: relative;
+    background: #050b12;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 18px;
+    border: 1px solid #1f2937;
+    box-shadow: 0 14px 32px rgba(0,0,0,0.6);
+    transition: .2s;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.card:hover{
-    transform:scale(1.02);
+.card:hover {
+    transform: translateY(-2px);
+    border-color: #22c55e;
 }
 
-.title{
-    font-size:24px;
-    margin-bottom:15px;
-    font-weight:bold;
-    color:#00e676;
+.title {
+    font-size: 18px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #e5e7eb;
 }
 
-.progressText{
-    margin:8px 0;
-    font-size:16px;
+.category-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.progressText {
+    margin: 4px 0;
+    font-size: 13px;
+    color: #9ca3af;
 }
 
 /* ---------- CONTROLS ---------- */
-.controls{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-top:15px;
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
 }
 
-.minus,.plus{
-    width:45px;
-    height:45px;
-    font-size:26px;
-    color:white;
-    border-radius:50%;
-    font-weight:bold;
-
-    touch-action:manipulation;
-    -webkit-user-select:none;
-    -webkit-touch-callout:none;
+.minus, .plus {
+    width: 40px;
+    height: 40px;
+    font-size: 22px;
+    border-radius: 999px;
+    font-weight: 600;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 
-.minus{
-    background:#d32f2f;
+.minus {
+    background: #ef4444;
+    color: #020617;
 }
 
-.plus{
-    background:#00e676;
-    color:#000;
+.plus {
+    background: #22c55e;
+    color: #020617;
 }
 
-.delete{
-    margin-left:auto;
-    background:#444;
-    color:white;
-    padding:10px 18px;
-    border-radius:8px;
+.delete {
+    margin-left: auto;
+    background: #111827;
+    color: #e5e7eb;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 13px;
 }
 
 /* ---------- PROGRESS BAR ---------- */
-.bar{
-    height:14px;
-    background:#333;
-    border-radius:20px;
-    overflow:hidden;
-    margin-top:20px;
+.bar {
+    height: 10px;
+    background: #0b1120;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 12px;
 }
 
-.fill{
-    height:100%;
-    background:#00e676;
-    width:0%;
-    transition:width .25s ease-out; /* Smooth animation */
+.fill {
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+    width: 0%;
+    transition: width .25s ease-out;
 }
 
-/* ---------- 📱 MOBILE RESPONSIVE ---------- */
+/* ---------- MOBILE ---------- */
 @media (max-width: 600px) {
     body {
         margin: 20px auto;
@@ -208,7 +303,7 @@ button{
     }
 
     .card {
-        padding: 20px;
+        padding: 16px;
     }
 
     .controls {
@@ -216,9 +311,9 @@ button{
     }
 
     .minus, .plus {
-        width: 50px;
-        height: 50px;
-        font-size: 30px;
+        width: 44px;
+        height: 44px;
+        font-size: 24px;
     }
 }
 </style>
@@ -226,118 +321,215 @@ button{
 
 <body>
 
-<h1>EAFC Objective Tracker</h1>
+<h1>EAFC 25 Tracker</h1>
+<div class="subtitle">Objectives • Milestones • SBCs • Daily Tasks</div>
 
-<div class="tabs">
-    <div class="tab active" onclick="switchTab('active')">Active</div>
-    <div class="tab" onclick="switchTab('completed')">Completed</div>
+<div class="global-panel">
+    <div class="global-header">
+        <div class="global-title">Overall Progress</div>
+        <div class="global-stats" id="globalStats">0 / 0 (0%)</div>
+    </div>
+    <div class="global-bar">
+        <div class="global-fill" id="globalFill"></div>
+    </div>
+</div>
+
+<div class="category-tabs">
+    <div class="category-tab active" data-cat="objectives" onclick="switchCategory('objectives')">Objectives</div>
+    <div class="category-tab" data-cat="milestones" onclick="switchCategory('milestones')">Milestones</div>
+    <div class="category-tab" data-cat="sbcs" onclick="switchCategory('sbcs')">SBCs</div>
+    <div class="category-tab" data-cat="daily" onclick="switchCategory('daily')">Daily Tasks</div>
+</div>
+
+<div class="view-toggle">
+    <div class="view-btn active" data-view="active" onclick="switchView('active')">Active</div>
+    <div class="view-btn" data-view="completed" onclick="switchView('completed')">Completed</div>
 </div>
 
 <div class="creator">
     <input id="name" placeholder="Objective Name">
     <input id="qty" type="number" inputmode="numeric" pattern="[0-9]*" min="1" placeholder="Quantity">
-    <button class="addBtn" onclick="addObjective()">Add Objective</button>
+    <button class="addBtn" onclick="addObjective()">Add</button>
 </div>
 
 <div id="list"></div>
 
 <script>
-let activeObjectives = JSON.parse(localStorage.getItem("activeObjectives")) || [];
-let completedObjectives = JSON.parse(localStorage.getItem("completedObjectives")) || [];
+/* ---------- DATA MODEL ---------- */
+const STORAGE_KEY = "eafc25Tracker";
 
-let currentTab = "active";
+let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+    objectives: { active: [], completed: [] },
+    milestones: { active: [], completed: [] },
+    sbcs: { active: [], completed: [] },
+    daily: { active: [], completed: [] }
+};
 
-function save(){
-    localStorage.setItem("activeObjectives", JSON.stringify(activeObjectives));
-    localStorage.setItem("completedObjectives", JSON.stringify(completedObjectives));
+let currentCategory = "objectives";
+let currentView = "active";
+
+/* ---------- UTIL ---------- */
+function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    updateGlobalProgress();
 }
 
-function switchTab(tab){
-    currentTab = tab;
+function vibrate(ms = 30) {
+    if (navigator.vibrate) {
+        navigator.vibrate(ms);
+    }
+}
 
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    document.querySelector(`.tab:nth-child(${tab === "active" ? 1 : 2})`).classList.add("active");
+/* ---------- CATEGORY / VIEW ---------- */
+function switchCategory(cat) {
+    currentCategory = cat;
+
+    document.querySelectorAll(".category-tab").forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.cat === cat);
+    });
 
     render();
 }
 
-function addObjective(){
+function switchView(view) {
+    currentView = view;
+
+    document.querySelectorAll(".view-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.view === view);
+    });
+
+    render();
+}
+
+/* ---------- ADD OBJECTIVE ---------- */
+function addObjective() {
     const name = document.getElementById("name").value.trim();
     const qty = parseInt(document.getElementById("qty").value);
 
-    if(name === "" || !qty || qty < 1){
-        alert("Enter a valid objective.");
+    if (name === "" || !qty || qty < 1) {
+        alert("Enter a valid name and quantity.");
         return;
     }
 
-    activeObjectives.push({
-        name:name,
-        target:qty,
-        progress:0
+    data[currentCategory].active.push({
+        name: name,
+        target: qty,
+        progress: 0
     });
 
+    vibrate(40);
     save();
     render();
 
-    document.getElementById("name").value="";
-    document.getElementById("qty").value="";
+    document.getElementById("name").value = "";
+    document.getElementById("qty").value = "";
 }
 
-function plus(index){
-    let o = activeObjectives[index];
+/* ---------- PROGRESS CONTROLS ---------- */
+function plus(index) {
+    let o = data[currentCategory].active[index];
 
-    if(o.progress < o.target){
+    if (!o) return;
+
+    if (o.progress < o.target) {
         o.progress++;
     }
 
-    if(o.progress >= o.target){
-        completedObjectives.push(o);
-        activeObjectives.splice(index,1);
+    if (o.progress >= o.target) {
+        data[currentCategory].completed.push(o);
+        data[currentCategory].active.splice(index, 1);
     }
 
+    vibrate(30);
     save();
     render();
 }
 
-function minus(index){
-    let o = activeObjectives[index];
+function minus(index) {
+    let o = data[currentCategory].active[index];
 
-    if(o.progress > 0){
+    if (!o) return;
+
+    if (o.progress > 0) {
         o.progress--;
     }
 
+    vibrate(20);
     save();
     render();
 }
 
-function removeActive(index){
-    if(confirm("Delete this objective?")){
-        activeObjectives.splice(index,1);
-        save();
-        render();
-    }
+/* ---------- DELETE ---------- */
+function removeActive(index) {
+    if (!confirm("Delete this objective?")) return;
+
+    data[currentCategory].active.splice(index, 1);
+    vibrate(40);
+    save();
+    render();
 }
 
-function removeCompleted(index){
-    if(confirm("Delete this completed objective?")){
-        completedObjectives.splice(index,1);
-        save();
-        render();
-    }
+function removeCompleted(index) {
+    if (!confirm("Delete this completed objective?")) return;
+
+    data[currentCategory].completed.splice(index, 1);
+    vibrate(40);
+    save();
+    render();
 }
 
-function render(){
+/* ---------- GLOBAL PROGRESS ---------- */
+function updateGlobalProgress() {
+    let totalTarget = 0;
+    let totalProgress = 0;
+
+    for (const cat of ["objectives", "milestones", "sbcs", "daily"]) {
+        const active = data[cat].active;
+        const completed = data[cat].completed;
+
+        active.forEach(o => {
+            totalTarget += o.target;
+            totalProgress += o.progress;
+        });
+
+        completed.forEach(o => {
+            totalTarget += o.target;
+            totalProgress += o.target; // completed = full
+        });
+    }
+
+    const percent = totalTarget === 0 ? 0 : Math.round((totalProgress / totalTarget) * 100);
+
+    const statsEl = document.getElementById("globalStats");
+    const fillEl = document.getElementById("globalFill");
+
+    statsEl.textContent = `${totalProgress} / ${totalTarget} (${percent}%)`;
+    fillEl.style.width = `${percent}%`;
+}
+
+/* ---------- RENDER ---------- */
+function render() {
     const list = document.getElementById("list");
     list.innerHTML = "";
 
-    const data = currentTab === "active" ? activeObjectives : completedObjectives;
+    const catData = data[currentCategory];
+    const items = currentView === "active" ? catData.active : catData.completed;
 
-    data.forEach((o,index)=>{
+    const categoryNames = {
+        objectives: "Objectives",
+        milestones: "Milestones",
+        sbcs: "SBCs",
+        daily: "Daily Tasks"
+    };
+
+    items.forEach((o, index) => {
         const percent = (o.progress / o.target) * 100;
+        const remaining = Math.max(0, o.target - o.progress);
 
         list.innerHTML += `
 <div class="card">
     <div>
+        <div class="category-label">${categoryNames[currentCategory]}</div>
         <div class="title">${o.name}</div>
 
         <div class="progressText">
@@ -345,11 +537,11 @@ function render(){
         </div>
 
         <div class="progressText">
-            Remaining: <strong>${Math.max(0, o.target - o.progress)}</strong>
+            Remaining: <strong>${remaining}</strong>
         </div>
     </div>
 
-    ${currentTab === "active" ? `
+    ${currentView === "active" ? `
     <div class="controls">
         <button class="minus" onclick="minus(${index})">−</button>
         <button class="plus" onclick="plus(${index})">+</button>
@@ -367,8 +559,11 @@ function render(){
 </div>
         `;
     });
+
+    updateGlobalProgress();
 }
 
+/* ---------- INIT ---------- */
 render();
 </script>
 
