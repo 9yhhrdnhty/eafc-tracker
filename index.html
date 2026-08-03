@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EAFC 25 Tracker</title>
+<title>EAFC Tracker</title>
 
 <style>
 /* ---------- GLOBAL ---------- */
@@ -321,7 +321,7 @@ button {
 
 <body>
 
-<h1>EAFC 25 Tracker</h1>
+<h1>EAFC Tracker</h1>
 <div class="subtitle">Objectives • Milestones • SBCs • Daily Tasks</div>
 
 <div class="global-panel">
@@ -374,9 +374,9 @@ function save() {
     updateGlobalProgress();
 }
 
-function vibrate(ms = 30) {
+function vibrate(ms = 20) {
     if (navigator.vibrate) {
-        navigator.vibrate(ms);
+        navigator.vibrate([ms]);
     }
 }
 
@@ -440,7 +440,7 @@ function plus(index) {
         data[currentCategory].active.splice(index, 1);
     }
 
-    vibrate(30);
+    vibrate(20);
     save();
     render();
 }
@@ -454,7 +454,7 @@ function minus(index) {
         o.progress--;
     }
 
-    vibrate(20);
+    vibrate(15);
     save();
     render();
 }
@@ -485,16 +485,10 @@ function updateGlobalProgress() {
 
     for (const cat of ["objectives", "milestones", "sbcs", "daily"]) {
         const active = data[cat].active;
-        const completed = data[cat].completed;
 
         active.forEach(o => {
             totalTarget += o.target;
             totalProgress += o.progress;
-        });
-
-        completed.forEach(o => {
-            totalTarget += o.target;
-            totalProgress += o.target; // completed = full
         });
     }
 
