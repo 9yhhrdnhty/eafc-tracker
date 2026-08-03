@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<link rel="manifest" href="manifest.json">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="EAFC Tracker">
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EAFC Objective Tracker</title>
+
+<style>
+/* ---------- GLOBAL ---------- */
+body{
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:#121212;
+    color:#eaeaea;
+    margin:40px auto;
+    max-width:900px;
+    padding:0 20px;
+}
+
+h1{
+    text-align:center;
+    color:#00e676;
+    margin-bottom:30px;
+    letter-spacing:1px;
+}
+
+/* ---------- TABS ---------- */
+.tabs{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.tab{
+    padding:10px 20px;
+    background:#1f1f1f;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.tab.active{
+    background:#00e676;
+    color:#000;
+    font-weight:bold;
+}
+
+/* ---------- CREATOR ---------- */
+.creator{
+    display:flex;
+    gap:12px;
+    margin-bottom:30px;
+    flex-wrap:wrap;
+    background:#1f1f1f;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,0,0,0.3);
+}
+
+input{
+    padding:12px;
+    font-size:16px;
+    border:none;
+    border-radius:8px;
+    flex:1;
+    background:#2b2b2b;
+    color:white;
+}
+
+input:focus{
+    outline:2px solid #00e676;
+}
+
+button{
+    cursor:pointer;
+    border:none;
+    border-radius:8px;
+    transition:.2s;
+}
+
+.addBtn{
+    background:#00e676;
+    color:#000;
+    padding:12px 20px;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.addBtn:hover{
+    background:#1aff7a;
+}
+
+/* ---------- CARD ---------- */
+.card{
+    position:relative;
+    background:#1f1f1f;
+    border-radius:12px;
+    padding:25px;
+    margin-bottom:25px;
+    box-shadow:0 0 12px rgba(0,0,0,0.35);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:scale(1.02);
+}
+
+.title{
+    font-size:24px;
+    margin-bottom:15px;
+    font-weight:bold;
+    color:#00e676;
+}
+
+.progressText{
+    margin:8px 0;
+    font-size:16px;
+}
+
+/* ---------- CONTROLS ---------- */
+.controls{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:15px;
+}
+
+.minus,.plus{
+    width:45px;
+    height:45px;
+    font-size:26px;
+    color:white;
+    border-radius:50%;
+    font-weight:bold;
+}
+
+.minus{
+    background:#d32f2f;
+}
+
+.plus{
+    background:#00e676;
+    color:#000;
+}
+
+.delete{
+    margin-left:auto;
+    background:#444;
+    color:white;
+    padding:10px 18px;
+    border-radius:8px;
+}
+
+/* ---------- PROGRESS BAR ---------- */
+.bar{
+    height:14px;
+    background:#333;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:20px;
+}
+
+.fill{
+    height:100%;
+    background:#00e676;
+    width:0%;
+    transition:.3s;
+}
+
+/* ---------- 📱 MOBILE RESPONSIVE ---------- */
+@media (max-width: 600px) {
+    body {
+        margin: 20px auto;
+        padding: 0 10px;
+    }
+
+    .creator {
+        flex-direction: column;
+    }
+
+    input {
+        width: 100%;
+    }
+
+    .addBtn {
+        width: 100%;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .controls {
+        gap: 8px;
+    }
+
+    .minus, .plus {
+        width: 50px;
+        height: 50px;
+        font-size: 30px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>EAFC Objective Tracker</h1>
+
+<div class="tabs">
+    <div class="tab active" onclick="switchTab('active')">Active</div>
+    <div class="tab" onclick="switchTab('completed')">Completed</div>
+</div>
+
+<div class="creator">
+    <input id="name" placeholder="Objective Name">
+    <input id="qty" type="number" min="1" placeholder="Quantity">
+    <button class="addBtn" onclick="addObjective()">Add Objective</button>
+</div>
+
+<div id="list"></div>
+
+<script>
+let activeObjectives = JSON.parse(localStorage.getItem("activeObjectives")) || [];
+let completedObjectives = JSON.parse(localStorage.getItem("completedObjectives")) || [];
+
+let currentTab = "active";
+
+function save(){
+    localStorage.setItem("activeObjectives", JSON.stringify(activeObjectives));
+    localStorage.setItem("completedObjectives", JSON.stringify(completedObjectives));
+}
+
+function switchTab(tab){
+    currentTab = tab;
+
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelector(`.tab:nth-child(${tab === "active" ? 1 : 2})`).classList.add("active");
+
+    render();
+}
+
+function addObjective(){
+    const name = document.getElementById("name").value.trim();
+    const qty = parseInt(document.getElementById("qty").value);
+
+    if(name === "" || !qty || qty < 1){
+        alert("Enter a valid objective.");
+        return;
+    }
+
+    activeObjectives.push({
+        name:name,
+        target:qty,
+        progress:0
+    });
+
+    save();
+    render();
+
+    document.getElementById("name").value="";
+    document.getElementById("qty").value="";
+}
+
+function plus(index){
+    let o = activeObjectives[index];
+
+    if(o.progress < o.target){
+        o.progress++;
+    }
+
+    if(o.progress >= o.target){
+        completedObjectives.push(o);
+        activeObjectives.splice(index,1);
+    }
+
+    save();
+    render();
+}
+
+function minus(index){
+    let o = activeObjectives[index];
+
+    if(o.progress > 0){
+        o.progress--;
+    }
+
+    save();
+    render();
+}
+
+function removeActive(index){
+    if(confirm("Delete this objective?")){
+        activeObjectives.splice(index,1);
+        save();
+        render();
+    }
+}
+
+function removeCompleted(index){
+    if(confirm("Delete this completed objective?")){
+        completedObjectives.splice(index,1);
+        save();
+        render();
+    }
+}
+
+function render(){
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    const data = currentTab === "active" ? activeObjectives : completedObjectives;
+
+    data.forEach((o,index)=>{
+        const percent = (o.progress / o.target) * 100;
+
+        list.innerHTML += `
+<div class="card">
+    <div class="title">${o.name}</div>
+
+    <div class="progressText">
+        Progress: <strong>${o.progress}</strong> / ${o.target}
+    </div>
+
+    <div class="progressText">
+        Remaining: <strong>${Math.max(0, o.target - o.progress)}</strong>
+    </div>
+
+    ${currentTab === "active" ? `
+    <div class="controls">
+        <button class="minus" onclick="minus(${index})">−</button>
+        <button class="plus" onclick="plus(${index})">+</button>
+        <button class="delete" onclick="removeActive(${index})">Delete</button>
+    </div>
+    ` : `
+    <div class="controls">
+        <button class="delete" onclick="removeCompleted(${index})">Delete</button>
+    </div>
+    `}
+
+    <div class="bar">
+        <div class="fill" style="width:${percent}%"></div>
+    </div>
+</div>
+        `;
+    });
+}
+
+render();
+</script>
+
+</body>
+</html>
