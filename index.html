@@ -20,7 +20,7 @@ body {
     padding: 0 16px;
 }
 
-/* EAFC 25 minimal clean vibe */
+/* EAFC minimal clean vibe */
 h1 {
     text-align: center;
     color: #22c55e;
@@ -245,9 +245,6 @@ button {
     font-size: 22px;
     border-radius: 999px;
     font-weight: 600;
-    touch-action: manipulation;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
 }
 
 .minus {
@@ -283,6 +280,11 @@ button {
     background: linear-gradient(90deg, #22c55e, #4ade80);
     width: 0%;
     transition: width .25s ease-out;
+}
+
+/* ---------- SETTINGS PAGE ---------- */
+#settingsPanel {
+    display: none;
 }
 
 /* ---------- MOBILE ---------- */
@@ -339,6 +341,7 @@ button {
     <div class="category-tab" data-cat="milestones" onclick="switchCategory('milestones')">Milestones</div>
     <div class="category-tab" data-cat="sbcs" onclick="switchCategory('sbcs')">SBCs</div>
     <div class="category-tab" data-cat="daily" onclick="switchCategory('daily')">Daily Tasks</div>
+    <div class="category-tab" data-cat="settings" onclick="switchCategory('settings')">Settings</div>
 </div>
 
 <div class="view-toggle">
@@ -353,6 +356,18 @@ button {
 </div>
 
 <div id="list"></div>
+
+<!-- SETTINGS PAGE -->
+<div id="settingsPanel">
+    <div class="card">
+        <div class="title">Settings</div>
+        <div class="progressText">Manage your EAFC Tracker data</div>
+
+        <button class="delete" onclick="wipeAllData()" style="margin-top:20px;">
+            Wipe All Objective Data
+        </button>
+    </div>
+</div>
 
 <script>
 /* ---------- DATA MODEL ---------- */
@@ -388,7 +403,14 @@ function switchCategory(cat) {
         tab.classList.toggle("active", tab.dataset.cat === cat);
     });
 
-    render();
+    if (cat === "settings") {
+        document.getElementById("list").style.display = "none";
+        document.getElementById("settingsPanel").style.display = "block";
+    } else {
+        document.getElementById("settingsPanel").style.display = "none";
+        document.getElementById("list").style.display = "block";
+        render();
+    }
 }
 
 function switchView(view) {
@@ -476,6 +498,25 @@ function removeCompleted(index) {
     vibrate(40);
     save();
     render();
+}
+
+/* ---------- WIPE ALL DATA ---------- */
+function wipeAllData() {
+    if (!confirm("Are you sure you want to wipe ALL objective data?")) return;
+
+    vibrate(50);
+
+    data = {
+        objectives: { active: [], completed: [] },
+        milestones: { active: [], completed: [] },
+        sbcs: { active: [], completed: [] },
+        daily: { active: [], completed: [] }
+    };
+
+    save();
+    render();
+
+    alert("All EAFC Tracker data has been wiped.");
 }
 
 /* ---------- GLOBAL PROGRESS ---------- */
