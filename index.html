@@ -1,10 +1,4 @@
 <!DOCTYPE html>
-<link rel="manifest" href="manifest.json">
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="EAFC Tracker">
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -104,6 +98,12 @@ button{
     margin-bottom:25px;
     box-shadow:0 0 12px rgba(0,0,0,0.35);
     transition:.3s;
+
+    /* ⭐ Prevent resizing/jumping */
+    min-height:220px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
 }
 
 .card:hover{
@@ -137,6 +137,9 @@ button{
     color:white;
     border-radius:50%;
     font-weight:bold;
+
+    /* ⭐ Prevent double-tap zoom & layout shift */
+    touch-action:manipulation;
 }
 
 .minus{
@@ -169,7 +172,9 @@ button{
     height:100%;
     background:#00e676;
     width:0%;
-    transition:.3s;
+
+    /* ⭐ Smooth animation prevents layout jump */
+    transition:width .25s ease-out;
 }
 
 /* ---------- 📱 MOBILE RESPONSIVE ---------- */
@@ -321,14 +326,16 @@ function render(){
 
         list.innerHTML += `
 <div class="card">
-    <div class="title">${o.name}</div>
+    <div>
+        <div class="title">${o.name}</div>
 
-    <div class="progressText">
-        Progress: <strong>${o.progress}</strong> / ${o.target}
-    </div>
+        <div class="progressText">
+            Progress: <strong>${o.progress}</strong> / ${o.target}
+        </div>
 
-    <div class="progressText">
-        Remaining: <strong>${Math.max(0, o.target - o.progress)}</strong>
+        <div class="progressText">
+            Remaining: <strong>${Math.max(0, o.target - o.progress)}</strong>
+        </div>
     </div>
 
     ${currentTab === "active" ? `
